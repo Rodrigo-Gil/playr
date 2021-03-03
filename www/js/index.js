@@ -1,10 +1,43 @@
 let app = {
-    track: {
-        src: 'file:///android_asset/www/media/California_Dreamin.mp3',
-        // src: './media/California_Dreamin.mp3',
-        title: 'Fight Club Rules',
-        volume: 0.5
+    volume: 0.5,
+    srcIndex: "",
+    tracks: [
+        {
+        //src: 'file:///android_asset/www/media/the_miracle_of_joey_ramone.mp3',
+        src: './media/the_miracle_of_joey_ramone.mp3',
+        artist: 'U2',
+        track: 'The Miracle (of Joey Ramone)',
+        album: 'Songs of Innocence'
     },
+    {
+        //src: 'file:///android_asset/www/media/every_breaking_wave.mp3',
+        src: './media/every_breaking_wave.mp3',
+        artist: 'U2',
+        track: 'Every Breaking Wave',
+        album: 'Songs of Innocence'
+    },
+    {
+        //src: 'file:///android_asset/www/media/california.mp3',
+        src: './media/california.mp3',
+        artist: 'U2',
+        track: 'California (There is no End to Love)',
+        album: 'Songs of Innocence'
+    },
+    {
+        //src: 'file:///android_asset/www/media/entre_nos_dois.mp3',
+        src: './media/entre_nos_dois.mp3',
+        artist: 'Malta',
+        track: 'Entre Nos Dois',
+        album: 'Supernova'
+    },
+    {
+        //src: 'file:///android_asset/www/media/memorias.mp3',
+        src: './media/memorias.mp3',
+        artist: 'Malta',
+        track: 'Memorias (Come Wake Me Up)',
+        album: 'Supernova'
+    }
+],
     media:null,
     status:{
         '0':'MEDIA_NONE',
@@ -24,12 +57,30 @@ let app = {
     },
     ready: function() {
         app.addListeners();
-        let src = app.track.src;
+        app.firstMusic();
+    },
+    firstMusic: function () {
+        app.srcIndex = 0;
+        let src = app.tracks[app.srcIndex].src;
+        console.log(app.srcIndex);
         app.media = new Media(src, app.ftw, app.wtf, app.statusChange);
+    },
+    nxtMusic: function() {
+            app.srcIndex = app.srcIndex+1;
+            if (app.srcIndex <= (app.tracks.length-1)) {
+                console.log(app.tracks.length-1);
+                let src = app.tracks[app.srcIndex].src
+                console.log(app.srcIndex);
+                app.media = new Media(src, app.ftw, app.wtf, app.statusChange);
+                app.play();
+            } else {
+                app.firstMusic();
+            };
     },
     ftw: function(){
         //success creating the media object and playing, stopping, or recording
-        console.log('success doing something');
+        console.log('success playing the music');
+        app.nxtMusic();
     },
     wtf: function(err){
         //failure of playback of media object
@@ -37,7 +88,7 @@ let app = {
         console.error(err);
     },
     statusChange: function(status){
-        console.log('media status is now ' + app.status[status] );
+        console.log('media status is now ' + app.status[status] ); 
     },
     addListeners: function(){
         document.querySelector('#play-btn').addEventListener('click', app.play);
@@ -63,7 +114,7 @@ let app = {
         app.media.pause();
     },
     volumeUp: function(){
-        vol = parseFloat(app.track.volume);
+        vol = parseFloat(app.volume);
         console.log('current volume', vol);
         vol += 0.1;
         if(vol > 1){
@@ -71,10 +122,10 @@ let app = {
         }
         console.log(vol);
         app.media.setVolume(vol);
-        app.track.volume = vol;
+        app.volume = vol;
     },
     volumeDown: function(){
-        vol = app.track.volume;
+        vol = app.volume;
         console.log('current volume', vol);
         vol -= 0.1;
         if(vol < 0){
@@ -82,7 +133,7 @@ let app = {
         }
         console.log(vol);
         app.media.setVolume(vol);
-        app.track.volume = vol;
+        app.volume = vol;
     },
     ff: function(){
         app.media.getCurrentPosition((pos)=>{

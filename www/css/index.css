@@ -17,6 +17,7 @@ html {
 body {
   /* background: url("../img/background.jpg"); */
   display: flex;
+  text-align:center;
   flex-direction: column;
   width: 100%;
   margin: 0rem auto;
@@ -83,4 +84,28 @@ button:active {
   background-color: #3e8e41;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
+}
+
+.page.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+header {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-areas: "btn-left title btn-right";
+  height: 3rem;
+  background-color: #4C6861;
+  box-shadow: 0 2px 4px hsla(0, 0%, 0%, 0.64);
+}
+
+.page {
+  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  opacity: 0;
+  transform: translateX(-200%);
 }

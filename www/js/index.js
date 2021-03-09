@@ -1,9 +1,11 @@
 let app = {
+    //global variables that will be used on the app
     volume: 0.5,
     currIndex: "",
     currStatus: "",
     musicSelected: false,
     media:null,
+    trackPage: document.querySelector("#track_info"),
     tracks: [
         {
         //src: 'file:///android_asset/www/media/the_miracle_of_joey_ramone.mp3',
@@ -11,7 +13,8 @@ let app = {
         img: './img/u2_songs.jpeg',
         artist: 'U2',
         track: 'The Miracle (of Joey Ramone)',
-        album: 'Songs of Innocence'
+        album: 'Songs of Innocence',
+        length: 255.4253
     },
     {
         //src: 'file:///android_asset/www/media/every_breaking_wave.mp3',
@@ -19,7 +22,8 @@ let app = {
         img: './img/u2_songs.jpeg',
         artist: 'U2',
         track: 'Every Breaking Wave',
-        album: 'Songs of Innocence'
+        album: 'Songs of Innocence',
+        length: 252.2122
     },
     {
         //src: 'file:///android_asset/www/media/california.mp3',
@@ -27,7 +31,8 @@ let app = {
         img: './img/u2_songs.jpeg',
         artist: 'U2',
         track: 'California (There is no End to Love)',
-        album: 'Songs of Innocence'
+        album: 'Songs of Innocence',
+        length: 239.9085
     },
     {
         //src: 'file:///android_asset/www/media/entre_nos_dois.mp3',
@@ -35,7 +40,8 @@ let app = {
         img: './img/malta_supernova.jpeg',
         artist: 'Malta',
         track: 'Entre Nos Dois',
-        album: 'Supernova'
+        album: 'Supernova',
+        length: 205.296327
     },
     {
         //src: 'file:///android_asset/www/media/memorias.mp3',
@@ -43,7 +49,8 @@ let app = {
         img: './img/malta_supernova.jpeg',
         artist: 'Malta',
         track: 'Memorias (Come Wake Me Up)',
-        album: 'Supernova'
+        album: 'Supernova',
+        length: 230.739592
     }
 ],
     status:{
@@ -77,11 +84,12 @@ let app = {
             let artist = document.createElement('p');
             //inserting the content inside the elements
             img.src = el.img;
+            img.classList.add("album_picture");
             song.textContent = el.track;
             artist.textContent = el.artist;
-            //saving the index for each music
+            //saving the index for each music on the DOM
             musicDiv.setAttribute("index", app.tracks.indexOf(el));
-            musicDiv.classList.add("music_div");
+            musicDiv.classList.add("music_card");
             //adding the attribute for navigation
             musicDiv.setAttribute("data-target", "media_player");
             //appending elements on the list
@@ -94,6 +102,7 @@ let app = {
     },
     handlePlay: (ev) => {
         //this function is responsible for handling the music app
+        //setting true if the music was selected by the user
         app.musicSelected = true;
         //getting the index of the clicked music
         let index = parseInt(ev.target.closest('div').getAttribute('index'));
@@ -102,6 +111,8 @@ let app = {
         //activating navigation
         document.querySelector(".page.active").classList.remove("active");
         document.querySelector("#media_player").classList.add("active");
+        //activating the button on the homePage to return to the current media.
+        document.querySelector("#toMediaBtn").classList.add("active");
         //checking if the another music is playing
         if (app.media!= null) {
             app.media.stop();
@@ -110,12 +121,62 @@ let app = {
         }
     },
     musicStart: function (ev) {
+        //getting the tracks source
         let src = app.tracks[app.currIndex].src;
         app.media = new Media(src, app.success, app.failure, app.statusChange);
-        //resetting the global variable if another music was not selected 
+        console.log(app.media);
+        //cleaning the page with old music info;
+        app.trackPage.innerHTML = "";
+        //automatically playing the music
+        app.play();
+        //showing and updating the name of the song
+        app.musicName();
+        //activating and updating music duration
+        app.musicDuration();
+        //activating the timer
+        app.timer();
+        //resetting the global variable if another music was not selected
         app.musicSelected = false;
-        app.media.play();
-    },      
+    },
+    musicName: () => {
+        //creating the elements on the page
+        let musicDiv = document.createElement('div');
+        let music = document.createElement('h2');
+        let artist = document.createElement('h3')
+        //inserting the data inside the elements
+        music.textContent = app.tracks[app.currIndex].track;
+        artist.textContent = app.tracks[app.currIndex].artist;
+        //wrapping the content inside the div
+        musicDiv.classList.add('musicName');
+        //appending the elements on the page;
+        musicDiv.append(music);
+        musicDiv.append(artist);
+        app.trackPage.append(musicDiv);
+    },
+    timer: () => {
+        //creating elements on the page
+        let timerPara = document.createElement('p');
+        timerPara.classList.add("timer");
+        app.trackPage.append(timerPara);
+        console.log("timer-started");
+        //initializing the timer
+        let timer = setInterval(() => app.media.getCurrentPosition((pos => {
+            if (pos < app.media.getDuration() && app.status['2']) {
+                //creating elements on the page
+                console.log("Current position is: " + pos);
+                timerPara.innerHTML = "Current position is: " + pos;
+            } else {
+                clearInterval(timer);
+            }
+        })), 1000)
+    },
+    musicDuration: () => {
+        //creating the elements in case it does not exist.
+        let musicLength = document.createElement('p');
+        musicLength.classList.add('music_length');
+        musicLength.innerHTML = "Total Duration: " + app.tracks[app.currIndex].length;
+        app.trackPage.append(musicLength);
+    },
     success: function(){
         //moving to the next song automatically once one song finishes.
         if (app.musicSelected == false && app.currIndex < (app.tracks.length - 1)) {
@@ -124,7 +185,6 @@ let app = {
             console.log(app.currIndex)
             app.musicStart();
         } else {
-            console.log("another song selected by the user")
             //release memory on the device
             app.media.release();
             //start another music
@@ -137,16 +197,17 @@ let app = {
         console.error(err);
     },
     statusChange: function(status){
-        app.currStatus = status;
+        //app.currStatus = status;
         console.log('media status is now ' + app.status[status] );
     },
     addListeners: function(){
         //adding an event listener for each music div on the list
-        document.querySelectorAll(".music_div").forEach((el)=> {
+        document.querySelectorAll(".music_card").forEach((el)=> {
             el.addEventListener('click', app.handlePlay);
         })
         document.querySelector('#back-home').addEventListener('click', app.nav);
         document.querySelector('#play-btn').addEventListener('click', app.play);
+        document.querySelector('#toMediaBtn').addEventListener('click', app.nav)
         document.querySelector('#pause-btn').addEventListener('click', app.pause);
         document.querySelector('#up-btn').addEventListener('click', app.volumeUp);
         document.querySelector('#down-btn').addEventListener('click', app.volumeDown);

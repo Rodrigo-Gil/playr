@@ -1,4 +1,7 @@
+
+
 let app = {
+    //importing momentJs library to handle milliseconds conversion
     //global variables that will be used on the app
     volume: 0.5,
     currIndex: "",
@@ -8,8 +11,8 @@ let app = {
     trackPage: document.querySelector("#track_info"),
     tracks: [
         {
-        //src: 'file:///android_asset/www/media/the_miracle_of_joey_ramone.mp3',
-        src: './media/the_miracle_of_joey_ramone.mp3',
+        src: 'file:///android_asset/www/media/the_miracle_of_joey_ramone.mp3',
+        //src: './media/the_miracle_of_joey_ramone.mp3',
         img: './img/u2_songs.jpeg',
         artist: 'U2',
         track: 'The Miracle (of Joey Ramone)',
@@ -17,8 +20,8 @@ let app = {
         length: 255.4253
     },
     {
-        //src: 'file:///android_asset/www/media/every_breaking_wave.mp3',
-        src: './media/every_breaking_wave.mp3',
+        src: 'file:///android_asset/www/media/every_breaking_wave.mp3',
+        //src: './media/every_breaking_wave.mp3',
         img: './img/u2_songs.jpeg',
         artist: 'U2',
         track: 'Every Breaking Wave',
@@ -26,8 +29,8 @@ let app = {
         length: 252.2122
     },
     {
-        //src: 'file:///android_asset/www/media/california.mp3',
-        src: './media/california.mp3',
+        src: 'file:///android_asset/www/media/california.mp3',
+        //src: './media/california.mp3',
         img: './img/u2_songs.jpeg',
         artist: 'U2',
         track: 'California (There is no End to Love)',
@@ -35,8 +38,8 @@ let app = {
         length: 239.9085
     },
     {
-        //src: 'file:///android_asset/www/media/entre_nos_dois.mp3',
-        src: './media/entre_nos_dois.mp3',
+        src: 'file:///android_asset/www/media/entre_nos_dois.mp3',
+        //src: './media/entre_nos_dois.mp3',
         img: './img/malta_supernova.jpeg',
         artist: 'Malta',
         track: 'Entre Nos Dois',
@@ -44,8 +47,8 @@ let app = {
         length: 205.296327
     },
     {
-        //src: 'file:///android_asset/www/media/memorias.mp3',
-        src: './media/memorias.mp3',
+        src: 'file:///android_asset/www/media/memorias.mp3',
+        //src: './media/memorias.mp3',
         img: './img/malta_supernova.jpeg',
         artist: 'Malta',
         track: 'Memorias (Come Wake Me Up)',
@@ -163,18 +166,27 @@ let app = {
         let timer = setInterval(() => app.media.getCurrentPosition((pos => {
             if (pos < app.media.getDuration() && app.status['2']) {
                 //creating elements on the page
-                console.log("Current position is: " + pos);
-                timerPara.innerHTML = "Current position is: " + pos;
+                let time = app.timeConverter(pos)
+                console.log("Current position is: " + time);
+                timerPara.innerHTML = "Current position is: " + time;
             } else {
                 clearInterval(timer);
             }
         })), 1000)
     },
-    musicDuration: () => {
+    timeConverter:(time) => {
+        //function to convert time into mm:ss standard
+        let parsedTime = parseInt(time);
+        let minutes = Math.floor(time/60);
+        let seconds = Math.floor(time - minutes * 60);
+        return minutes+":" + seconds.toString().padStart(2, '0');
+    },
+    musicDuration: () => { 
         //creating the elements in case it does not exist.
+        let duration = app.timeConverter(app.tracks[app.currIndex].length);
         let musicLength = document.createElement('p');
         musicLength.classList.add('music_length');
-        musicLength.innerHTML = "Total Duration: " + app.tracks[app.currIndex].length;
+        musicLength.innerHTML = "Total Duration: " + duration;
         app.trackPage.append(musicLength);
     },
     success: function(){

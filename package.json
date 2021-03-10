@@ -1,6 +1,6 @@
 {
-  "name": "com.algonquinlive.shar0489",
-  "displayName": "mediaPlugin",
+  "name": "com.algonquinlive.gil00013",
+  "displayName": "PlayR",
   "version": "1.0.0",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
@@ -17,17 +17,20 @@
     "cordova-browser": "^6.0.0",
     "cordova-plugin-file": "^6.0.2",
     "cordova-plugin-media": "^5.0.3",
+    "cordova-plugin-splashscreen": "^6.0.0",
     "cordova-plugin-whitelist": "^1.3.4"
   },
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-plugin-file": {},
-      "cordova-plugin-media": {}
+      "cordova-plugin-media": {},
+      "cordova-plugin-splashscreen": {}
     },
     "platforms": [
       "android",
       "browser"
     ]
-  }
+  },
+  "dependencies": {}
 }

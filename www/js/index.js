@@ -1,59 +1,55 @@
-
-
 let app = {
-    //importing momentJs library to handle milliseconds conversion
     //global variables that will be used on the app
     volume: 0.5,
     currIndex: "",
-    currStatus: "",
     musicSelected: false,
     media:null,
     trackPage: document.querySelector("#track_info"),
     tracks: [
         {
-        src: 'file:///android_asset/www/media/the_miracle_of_joey_ramone.mp3',
-        //src: './media/the_miracle_of_joey_ramone.mp3',
-        img: './img/u2_songs.jpeg',
-        artist: 'U2',
-        track: 'The Miracle (of Joey Ramone)',
-        album: 'Songs of Innocence',
-        length: 255.4253
+        src: 'file:///android_asset/www/media/Paradise_City.mp3',
+        //src: './media/Paradise_City.mp3',
+        img: './img/guns.jpeg',
+        artist: 'Guns n Roses',
+        track: 'Paradise City',
+        album: 'Appetite for Destruction',
+        length: 408.26800
     },
     {
-        src: 'file:///android_asset/www/media/every_breaking_wave.mp3',
-        //src: './media/every_breaking_wave.mp3',
-        img: './img/u2_songs.jpeg',
-        artist: 'U2',
-        track: 'Every Breaking Wave',
-        album: 'Songs of Innocence',
-        length: 252.2122
+        src: 'file:///android_asset/www/media/Welcome_to_the_jungle.mp3',
+        //src: './media/Welcome_to_the_jungle.mp3',
+        img: './img/guns.jpeg',
+        artist: 'Guns n Roses',
+        track: 'Welcome to the Jungle',
+        album: 'Appetite for Destruction',
+        length: 273.8680
     },
     {
-        src: 'file:///android_asset/www/media/california.mp3',
-        //src: './media/california.mp3',
-        img: './img/u2_songs.jpeg',
-        artist: 'U2',
-        track: 'California (There is no End to Love)',
-        album: 'Songs of Innocence',
-        length: 239.9085
+        src: 'file:///android_asset/www/media/worst_day_ever.mp3',
+        //src: './media/worst_day_ever.mp3',
+        img: './img/simple_plan.jpg',
+        artist: 'Simple Plan',
+        track: 'The Worst Day Ever',
+        album: 'Simple Plan',
+        length: 207.2030
     },
     {
-        src: 'file:///android_asset/www/media/entre_nos_dois.mp3',
-        //src: './media/entre_nos_dois.mp3',
-        img: './img/malta_supernova.jpeg',
-        artist: 'Malta',
-        track: 'Entre Nos Dois',
-        album: 'Supernova',
-        length: 205.296327
+        src: 'file:///android_asset/www/media/addicted.mp3',
+        //src: './media/addicted.mp3',
+        img: './img/simple_plan.jpg',
+        artist: 'Simple Plan',
+        track: 'Addicted',
+        album: 'No Pads, no Helmets... Just Balls',
+        length: 236.800
     },
     {
-        src: 'file:///android_asset/www/media/memorias.mp3',
-        //src: './media/memorias.mp3',
-        img: './img/malta_supernova.jpeg',
-        artist: 'Malta',
-        track: 'Memorias (Come Wake Me Up)',
-        album: 'Supernova',
-        length: 230.739592
+        src: 'file:///android_asset/www/media/god_must_hate_me.mp3',
+        //src: './media/god_must_hate_me.mp3',
+        img: './img/simple_plan.jpg',
+        artist: 'Simple Plan',
+        track: 'God Must Hate Me',
+        album: 'No Pads, no Helmets... Just Balls',
+        length: 164.5980
     }
 ],
     status:{
@@ -69,10 +65,10 @@ let app = {
         '3':'MEDIA_ERR_DECODE',
         '4':'MEDIA_ERR_NONE_SUPPORTED'
     },
-    init: function() {
+    init: () => {
         document.addEventListener('deviceready', app.ready, false);
     },
-    ready: function() {
+    ready: () => {
         app.listBuild();
         app.addListeners();
     },
@@ -83,13 +79,12 @@ let app = {
             //creating each element on the page
             let musicDiv = document.createElement('div');
             let img = document.createElement('img');
-            let song = document.createElement('p');
-            let artist = document.createElement('p');
+            let song = document.createElement('span');
+            let artist = document.createElement('span');
             //inserting the content inside the elements
             img.src = el.img;
             img.classList.add("album_picture");
-            song.textContent = el.track;
-            artist.textContent = el.artist;
+            song.textContent = el.track + " - " + el.artist;
             //saving the index for each music on the DOM
             musicDiv.setAttribute("index", app.tracks.indexOf(el));
             musicDiv.classList.add("music_card");
@@ -98,7 +93,6 @@ let app = {
             //appending elements on the list
             musicDiv.append(img);
             musicDiv.append(song);
-            musicDiv.append(artist);
             //appending the list on the page
             list.append(musicDiv);
         });
@@ -123,7 +117,7 @@ let app = {
             app.musicStart();
         }
     },
-    musicStart: function (ev) {
+    musicStart: (ev) => {
         //getting the tracks source
         let src = app.tracks[app.currIndex].src;
         app.media = new Media(src, app.success, app.failure, app.statusChange);
@@ -131,13 +125,16 @@ let app = {
         //cleaning the page with old music info;
         app.trackPage.innerHTML = "";
         //automatically playing the music
-        app.play();
+        app.media.play();
+        //showing the pause button automatically, once the music starts
+        document.querySelector("#pause-btn").classList.add('active-btn');
+        document.querySelector('#play-btn').classList.remove('active-btn');
         //showing and updating the name of the song
         app.musicName();
-        //activating and updating music duration
-        app.musicDuration();
         //activating the timer
         app.timer();
+        //activating and updating music duration
+        app.musicDuration();
         //resetting the global variable if another music was not selected
         app.musicSelected = false;
     },
@@ -145,8 +142,11 @@ let app = {
         //creating the elements on the page
         let musicDiv = document.createElement('div');
         let music = document.createElement('h2');
-        let artist = document.createElement('h3')
+        let artist = document.createElement('h3');
+        let albumPic = document.createElement('img');
         //inserting the data inside the elements
+        albumPic.src = app.tracks[app.currIndex].img;
+        albumPic.classList.add("background_img");
         music.textContent = app.tracks[app.currIndex].track;
         artist.textContent = app.tracks[app.currIndex].artist;
         //wrapping the content inside the div
@@ -154,6 +154,7 @@ let app = {
         //appending the elements on the page;
         musicDiv.append(music);
         musicDiv.append(artist);
+        musicDiv.append(albumPic);
         app.trackPage.append(musicDiv);
     },
     timer: () => {
@@ -161,16 +162,11 @@ let app = {
         let timerPara = document.createElement('p');
         timerPara.classList.add("timer");
         app.trackPage.append(timerPara);
-        console.log("timer-started");
         //initializing the timer
-        let timer = setInterval(() => app.media.getCurrentPosition((pos => {
-            if (pos < app.media.getDuration() && app.status['2']) {
-                //creating elements on the page
+        setInterval(() => app.media.getCurrentPosition((pos => {
+            if (pos > -1 ) {
                 let time = app.timeConverter(pos)
-                console.log("Current position is: " + time);
                 timerPara.innerHTML = "Current position is: " + time;
-            } else {
-                clearInterval(timer);
             }
         })), 1000)
     },
@@ -189,7 +185,7 @@ let app = {
         musicLength.innerHTML = "Total Duration: " + duration;
         app.trackPage.append(musicLength);
     },
-    success: function(){
+    success: () => {
         //moving to the next song automatically once one song finishes.
         if (app.musicSelected == false && app.currIndex < (app.tracks.length - 1)) {
             console.log("song finished")
@@ -208,19 +204,26 @@ let app = {
         console.warn('failure');
         console.error(err);
     },
-    statusChange: function(status){
-        //app.currStatus = status;
+    statusChange: (status) => {
         console.log('media status is now ' + app.status[status] );
     },
-    addListeners: function(){
+    addListeners: () => {
         //adding an event listener for each music div on the list
         document.querySelectorAll(".music_card").forEach((el)=> {
             el.addEventListener('click', app.handlePlay);
         })
         document.querySelector('#back-home').addEventListener('click', app.nav);
-        document.querySelector('#play-btn').addEventListener('click', app.play);
+        document.querySelector('#play-btn').addEventListener('click', (ev) => {
+            ev.target.classList.toggle('active-btn');
+            document.querySelector('#pause-btn').classList.add('active-btn');
+            app.play();
+        });
         document.querySelector('#toMediaBtn').addEventListener('click', app.nav)
-        document.querySelector('#pause-btn').addEventListener('click', app.pause);
+        document.querySelector('#pause-btn').addEventListener('click', (ev) => {
+            ev.target.classList.toggle('active-btn');
+            document.querySelector('#play-btn').classList.add('active-btn');
+            app.pause();
+        })
         document.querySelector('#up-btn').addEventListener('click', app.volumeUp);
         document.querySelector('#down-btn').addEventListener('click', app.volumeDown);
         document.querySelector('#ff-btn').addEventListener('click', app.ff);
@@ -229,13 +232,10 @@ let app = {
             app.media.release();
         });*/
     },
-    play: function(){
-        app.media.play();
-        if (app.currStatus = 'MEDIA_STARTING') {
-            console.log(app.tracks[app.currIndex].track + " - " + app.tracks[app.currIndex].artist);
-        }
+    play: () => {
+            app.media.play();
     },
-    pause: function(){
+    pause: () => {
         app.media.pause();
     },
     volumeUp: function(){

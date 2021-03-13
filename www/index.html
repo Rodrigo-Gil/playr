@@ -8,13 +8,14 @@
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
         <meta name="color-scheme" content="light dark">
         <link rel="stylesheet" href="css/index.css">
+        <link rel="stylesheet" href="./fontawesome-free/css/all.css">
         <title>Rodrigo's Playr</title>
     </head>
     <body>
         <section id="home" class="page active">
             <header>
                 <h1>Rodrigo's Playr</h1>
-                <button id="toMediaBtn" data-target="media_player">Back to Media</button>
+                <button id="toMediaBtn" data-target="media_player" class="fas fa-music fa nav-btn-media"></button>
             </header>
             <main>
                 <div id="content">
@@ -26,20 +27,20 @@
             </main>
         </section>
         <section id="media_player" class="page">
-            <button id="back-home" data-target="home">Home</button>
             <div id="player_content">
+                <button id="back-home" data-target="home" class="fas fa-home fa-2x nav-btn"></button>
+                <div id="playbackA">
+                    <button id="up-btn" class="fas fa-volume-up fa-2x"></button>
+                    <button id="down-btn" class="fas fa-volume-down fa-2x"></button>
+                </div>
                 <div id="track_info">
                     <!-- The information about the music will go here-->
                 </div>
                 <div id="playbackB">
-                    <button id="rew-btn">Backward</button>
-                    <button id="play-btn">Play</button>
-                    <button id="pause-btn">Pause</button>
-                    <button id="ff-btn">Forward</button>
-                </div>
-                <div id="playbackB">
-                    <button id="up-btn">Up</button>
-                    <button id="down-btn">Down</button>
+                    <button id="rew-btn" class="fas fa-backward fa-2x"></button>
+                    <button id="play-btn" class="fas fa-play fa-2x"></button>
+                    <button id="pause-btn" class="fas fa-pause fa-2x"></button>
+                    <button id="ff-btn" class="fas fa-forward fa-2x"></button>
                 </div>
             </div>
         </section>

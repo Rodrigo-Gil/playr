@@ -109,7 +109,7 @@ let app = {
         document.querySelector(".page.active").classList.remove("active");
         document.querySelector("#media_player").classList.add("active");
         //activating the button on the homePage to return to the current media.
-        document.querySelector("#toMediaBtn").classList.add("active");
+        document.querySelector("#toMediaBtn").classList.add("active", "animate")
         //checking if the another music is playing
         if (app.media!= null) {
             app.media.stop();
@@ -216,12 +216,14 @@ let app = {
         document.querySelector('#play-btn').addEventListener('click', (ev) => {
             ev.target.classList.toggle('active-btn');
             document.querySelector('#pause-btn').classList.add('active-btn');
+            document.querySelector('#toMediaBtn').classList.add('animate');
             app.play();
         });
         document.querySelector('#toMediaBtn').addEventListener('click', app.nav)
         document.querySelector('#pause-btn').addEventListener('click', (ev) => {
             ev.target.classList.toggle('active-btn');
             document.querySelector('#play-btn').classList.add('active-btn');
+            document.querySelector('#toMediaBtn').classList.remove('animate');
             app.pause();
         })
         document.querySelector('#up-btn').addEventListener('click', app.volumeUp);
